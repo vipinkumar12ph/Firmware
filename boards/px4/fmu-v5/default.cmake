@@ -125,6 +125,8 @@ px4_add_board(
 		px4_simple_app # Tutorial code from http://dev.px4.io/en/apps/hello_sky.html
 		rover_steering_control # Rover example app
 		segway
-		uuv_example_app
+                uuv_example_app
+                teste_1
+                teste_2
 
 	)
