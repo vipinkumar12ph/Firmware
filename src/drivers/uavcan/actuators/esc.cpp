@@ -165,7 +165,7 @@ void UavcanEscController::update_outputs(float *outputs, unsigned num_outputs)
 	 * Publish the command message to the bus
 	 * Note that for a quadrotor it takes one CAN frame
 	 */
-	(void)_uavcan_pub_raw_cmd.broadcast(msg);
+    (void)_uavcan_pub_raw_cmd.broadcast(msg);
 
 	// Publish actuator outputs
 	if (_actuator_outputs_pub != nullptr) {

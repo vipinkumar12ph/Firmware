@@ -56,6 +56,7 @@
 #include <arch/chip/chip.h>
 
 #include <uORB/topics/esc_status.h>
+#include <uORB/topics/teste_topic.h>
 #include <uORB/topics/parameter_update.h>
 
 #include <drivers/drv_hrt.h>
@@ -81,6 +82,7 @@ UavcanNode::UavcanNode(uavcan::ICanDriver &can_driver, uavcan::ISystemClock &sys
 	_node(can_driver, system_clock, _pool_allocator),
 	_node_mutex(),
 	_esc_controller(_node),
+    _teste_controller(_node),
 	_hardpoint_controller(_node),
 	_time_sync_master(_node),
 	_time_sync_slave(_node),
@@ -597,7 +599,7 @@ void UavcanNode::fill_node_info()
 	swver.optional_field_flags |= swver.OPTIONAL_FIELD_FLAG_VCS_COMMIT;
 
 	// Too verbose for normal operation
-	//PX4_INFO("SW version vcs_commit: 0x%08x", unsigned(swver.vcs_commit));
+    PX4_INFO("SW version vcs_commit: 0x%08x", unsigned(swver.vcs_commit));
 
 	_node.setSoftwareVersion(swver);
 
@@ -642,6 +644,12 @@ int UavcanNode::init(uavcan::NodeID node_id)
 	if (ret < 0) {
 		return ret;
 	}
+    ret = _teste_controller.init();
+    printf("teste_controller ret=%d \n",ret);
+    if (ret < 0) {
+    return ret;
+    }
+
 
 	// Sensor bridges
 	IUavcanSensorBridge::make_all(_node, _sensor_bridges);
@@ -747,6 +755,19 @@ int UavcanNode::run()
 	_armed_sub = orb_subscribe(ORB_ID(actuator_armed));
 	_test_motor_sub = orb_subscribe(ORB_ID(test_motor));
 	_actuator_direct_sub = orb_subscribe(ORB_ID(actuator_direct));
+
+    _teste_topic_sub = orb_subscribe(ORB_ID(teste_topic));
+    if(_teste_topic_sub==-1){
+    printf("Error orb_subscribe (ERROR)=%d\n",errno);
+    sleep(10);
+    _teste_topic_sub = orb_subscribe(ORB_ID(teste_topic));
+    }
+    if(_teste_topic_sub==-1){
+    printf("Error orb_subscribe (-1)=%d\n",errno);
+    sleep(10);
+    _teste_topic_sub = orb_subscribe(ORB_ID(teste_topic));
+    }
+
 
 	memset(&_outputs, 0, sizeof(_outputs));
 
@@ -986,6 +1007,27 @@ int UavcanNode::run()
 				_esc_controller.enable_idle_throttle_when_armed(_idle_throttle_when_armed > 0);
 			}
 		}
+
+        updated = false;
+        if(orb_check(_teste_topic_sub, &updated)==-1){
+        printf("Error orb_check =%d\n",errno);
+        }
+        if (updated) {
+        if(orb_copy(ORB_ID(teste_topic),_teste_topic_sub,&_teste_topic)==-1){
+        printf("Error orb_copy =%d\n",errno);
+        if(orb_copy(ORB_ID(teste_topic),_teste_topic_sub,&_teste_topic)==-1){
+        printf("Error orb_copy =%d\n",errno);
+        return 0;
+        }
+        else{
+        _teste_controller.update_outputs(_teste_topic.inc);
+        }
+        }
+        else {
+        _teste_controller.update_outputs(_teste_topic.inc);
+        }
+        }
+
 	}
 
 	orb_unsubscribe(params_sub);

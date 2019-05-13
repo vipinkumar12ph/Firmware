@@ -71,7 +71,7 @@ void UavcanHardpointController::set_command(uint8_t hardpoint_id, uint16_t comma
 	/*
 	 * Publish the command message to the bus
 	 */
-	(void)_uavcan_pub_raw_cmd.broadcast(_cmd);
+    (void)_uavcan_pub_raw_cmd.broadcast(_cmd);
 
 	/*
 	 * Start the periodic update timer after a command is set
