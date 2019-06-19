@@ -190,6 +190,10 @@ private:
     int  _teste_topic_sub = -1;
     teste_topic_s _teste_topic ;
 
+    int _motor_param_in_sub = -1;
+    motor_param_in_s _motor_param_in;
+
+
 	UavcanHardpointController	_hardpoint_controller;
 	uavcan::GlobalTimeSyncMaster	_time_sync_master;
 	uavcan::GlobalTimeSyncSlave	_time_sync_slave;

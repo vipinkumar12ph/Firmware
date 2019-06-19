@@ -52,6 +52,8 @@
 #include "stm32_can.h"
 #include "board_config.h"
 
+
+
 #ifdef CONFIG_CAN
 
 /************************************************************************************
@@ -93,7 +95,7 @@ int can_devinit(void)
 	static bool initialized = false;
 	struct can_dev_s *can;
 	int ret;
-
+    PX4_INFO("Hello someone is calling can_devinit!");
 	/* Check if we have already initialized */
 
 	if (!initialized) {

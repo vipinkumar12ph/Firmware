@@ -57,6 +57,7 @@
 
 #include <uORB/topics/esc_status.h>
 #include <uORB/topics/teste_topic.h>
+#include <uORB/topics/motor_param_in.h>
 #include <uORB/topics/parameter_update.h>
 
 #include <drivers/drv_hrt.h>
@@ -768,6 +769,18 @@ int UavcanNode::run()
     _teste_topic_sub = orb_subscribe(ORB_ID(teste_topic));
     }
 
+    _motor_param_in_sub = orb_subscribe(ORB_ID(motor_param_in));
+    if(_motor_param_in_sub==-1){
+    printf("Error orb_subscribe (ERROR)=%d\n",errno);
+    sleep(10);
+    _motor_param_in_sub = orb_subscribe(ORB_ID(motor_param_in));
+    }
+    if(_motor_param_in_sub==-1){
+    printf("Error orb_subscribe (-1)=%d\n",errno);
+    sleep(10);
+    _motor_param_in_sub = orb_subscribe(ORB_ID(motor_param_in));
+    }
+
 
 	memset(&_outputs, 0, sizeof(_outputs));
 
@@ -1025,6 +1038,29 @@ int UavcanNode::run()
         }
         else {
         _teste_controller.update_outputs(_teste_topic.inc);
+        }
+        }
+
+
+        updated = false;
+        if(orb_check(_motor_param_in_sub, &updated)==-1){
+        printf("Error orb_check =%d\n",errno);
+        }
+
+
+        if (updated) {
+        if(orb_copy(ORB_ID(motor_param_in),_motor_param_in_sub,&_motor_param_in)==-1){
+        printf("Error orb_copy =%d\n",errno);
+        if(orb_copy(ORB_ID(motor_param_in),_motor_param_in_sub,&_motor_param_in)==-1){
+        printf("Error orb_copy =%d\n",errno);
+        return 0;
+        }
+        else{
+        _teste_controller.update_outputs(_motor_param_in.mot_rpm);
+        }
+        }
+        else {
+        _teste_controller.update_outputs(_motor_param_in.mot_rpm);
         }
         }
 

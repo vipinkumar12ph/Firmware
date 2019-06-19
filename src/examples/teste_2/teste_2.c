@@ -10,9 +10,14 @@ Author: Pedro Silva
 #include<errno.h>
 #include<uORB/topics/teste_receive.h>
 #include<uORB/topics/teste_topic.h>
+#include<board_config.h>
+
+
 __EXPORT int teste_2_main(int argc, char *argv[]);
 int teste_2_main(int argc, char *argv[])
 {
+
+
 printf("teste_2.c---Inicio\n");
 bool updated;
 struct teste_receive_s test ;

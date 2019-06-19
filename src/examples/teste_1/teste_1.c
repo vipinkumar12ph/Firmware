@@ -5,6 +5,7 @@
 #include<stdio.h>
 #include<errno.h>
 #include<uORB/topics/teste_topic.h>
+#include<uORB/topics/motor_param_in.h>
 #include<stdlib.h>
 #include<string.h>
 #include<unistd.h>
@@ -13,6 +14,7 @@
 #include<px4_tasks.h>
 //#include<lib/systemlib/systemlib.h>
 #include<lib/systemlib/err.h>
+
 static bool thread_should_exit = false;
 /**< daemon exit flag */
 static bool thread_running = false;
@@ -82,18 +84,19 @@ return 1;
 }
 int teste_1_daemon_app_main(int argc, char *argv[])
 {
+
 warnx("[daemon] starting\n");
 thread_running = true;
 printf("teste_1.c---Inicio\n");
 struct teste_topic_s test = {.inc = 0};
-orb_advert_t topic_handle = orb_advertise(ORB_ID(teste_topic), &test);
+orb_advert_t topic_handle = orb_advertise(ORB_ID(motor_param_in), &test);
 // naparte do publisher tem que ser orb_advert_t em vez de static int
 sleep(10);
 while (!thread_should_exit) {
 for (int i=0;i<10;i++)
 {
-test.inc++;
-if(orb_publish(ORB_ID(teste_topic),topic_handle,&test)!=OK){
+test.inc=655;
+if(orb_publish(ORB_ID(motor_param_in),topic_handle,&test)!=OK){
 printf("Erro orb_publish=%d\n",errno);
 thread_running = false;
 return ERROR;

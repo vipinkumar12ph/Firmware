@@ -5,6 +5,7 @@
 #include <uavcan/equipment/test_can/TesteReceive.hpp>
 #include <lib/perf/perf_counter.h>
 #include <uORB/topics/teste_topic.h>
+#include <uORB/topics/motor_param_in.h>
 #include <uORB/topics/teste_receive.h>
 
 class UavcanTeste

@@ -144,6 +144,7 @@ set(msg_files
 	wind_estimate.msg
         teste_topic.msg
         teste_receive.msg
+        motor_param_in.msg
 
 	)
 

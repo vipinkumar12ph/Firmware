@@ -46,6 +46,7 @@
  ****************************************************************************/
 
 #include "board_config.h"
+//#include "can.c"
 
 #include <stdbool.h>
 #include <stdio.h>
@@ -279,6 +280,8 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 {
 	/* Power on Interfaces */
 
+
+
 	board_configure_dcache(0);
 
 	VDD_3V3_SD_CARD_EN(true);
@@ -343,6 +346,7 @@ __EXPORT int board_app_initialize(uintptr_t arg)
 	}
 
 #endif /* CONFIG_MMCSD */
+//    can_devinit();
 
 	return OK;
 }
