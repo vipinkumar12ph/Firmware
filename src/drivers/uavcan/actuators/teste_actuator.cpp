@@ -12,7 +12,9 @@ Author: Pedro Silva
 #include <cstdio>
 
 int convert(int value);
-UavcanTeste::UavcanTeste(uavcan::INode &node) :_node(node),_uavcan_pub_teste_cmd(node),_uavcan_sub_status(node)
+UavcanTeste::UavcanTeste(uavcan::INode &node) :_node(node),_uavcan_pub_teste_cmd(node),
+    _uavcan_pub_servo_zero(node),_uavcan_pub_servo_one(node),_uavcan_pub_servo_two(node),
+    _uavcan_pub_servo_three(node),_uavcan_sub_status(node)
 {
 }
 UavcanTeste::~UavcanTeste()
@@ -47,6 +49,42 @@ msg.valor = speed;
 printf("msg = %x\n",msg.valor);
 (void)_uavcan_pub_teste_cmd.broadcast(msg);
 }
+
+void UavcanTeste::update_outputs_servo(int id,float servo_angle)
+{
+    const auto timestamp = _node.getMonotonicTime();
+    if ((timestamp - _prev_cmd_pub).toUSec() < (1000000 / MAX_RATE_HZ)) {
+        return;
+        }
+_prev_cmd_pub = timestamp;
+
+uavcan::equipment::servo_param::ServoZero servo_angle_zero;
+uavcan::equipment::servo_param::ServoOne servo_angle_One;
+uavcan::equipment::servo_param::ServoTwo servo_angle_Two;
+uavcan::equipment::servo_param::ServoThree servo_angle_Three;
+
+switch (id) {
+case 0:
+    servo_angle_zero.angle = servo_angle;
+    (void)_uavcan_pub_servo_zero.broadcast(servo_angle_zero);
+    break;
+case 1:
+    servo_angle_One.angle = servo_angle;
+    (void)_uavcan_pub_servo_one.broadcast(servo_angle_One);
+    break;
+case 2:
+    servo_angle_Two.angle = servo_angle;
+    (void)_uavcan_pub_servo_two.broadcast(servo_angle_Two);
+    break;
+case 3:
+    servo_angle_Three.angle = servo_angle;
+    (void)_uavcan_pub_servo_three.broadcast(servo_angle_Three);
+    break;
+default:
+    break;
+}
+}
+
 
 int convert(int value){
     char a[3]="30";

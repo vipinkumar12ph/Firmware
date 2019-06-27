@@ -145,7 +145,7 @@ set(msg_files
         teste_topic.msg
         teste_receive.msg
         motor_param_in.msg
-
+        servo_param_in.msg
 	)
 
 if(NOT EXTERNAL_MODULES_LOCATION STREQUAL "")

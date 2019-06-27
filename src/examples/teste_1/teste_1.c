@@ -6,6 +6,7 @@
 #include<errno.h>
 #include<uORB/topics/teste_topic.h>
 #include<uORB/topics/motor_param_in.h>
+#include<uORB/topics/servo_param_in.h>
 #include<stdlib.h>
 #include<string.h>
 #include<unistd.h>
@@ -88,15 +89,20 @@ int teste_1_daemon_app_main(int argc, char *argv[])
 warnx("[daemon] starting\n");
 thread_running = true;
 printf("teste_1.c---Inicio\n");
-struct teste_topic_s test = {.inc = 0};
-orb_advert_t topic_handle = orb_advertise(ORB_ID(motor_param_in), &test);
+
+struct servo_param_in_s test2;
+orb_advert_t topic_handle = orb_advertise(ORB_ID(servo_param_in), &test2);
 // naparte do publisher tem que ser orb_advert_t em vez de static int
 sleep(10);
 while (!thread_should_exit) {
 for (int i=0;i<10;i++)
 {
-test.inc=655;
-if(orb_publish(ORB_ID(motor_param_in),topic_handle,&test)!=OK){
+test2.servo_id=i;
+test2.servo_angle=54+i;
+test2.servo_trim=0;
+test2.servo_status=0;
+
+if(orb_publish(ORB_ID(servo_param_in),topic_handle,&test2)!=OK){
 printf("Erro orb_publish=%d\n",errno);
 thread_running = false;
 return ERROR;

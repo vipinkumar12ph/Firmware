@@ -61,6 +61,7 @@
 #include <uORB/topics/actuator_armed.h>
 #include <uORB/topics/test_motor.h>
 #include <uORB/topics/actuator_direct.h>
+#include <uORB/topics/servo_param_in.h>
 
 #include "actuators/esc.hpp"
 #include "actuators/teste_actuator.hpp"
@@ -192,6 +193,9 @@ private:
 
     int _motor_param_in_sub = -1;
     motor_param_in_s _motor_param_in;
+
+    int _servo_param_in_sub = -1;
+    servo_param_in_s _servo_param_in;
 
 
 	UavcanHardpointController	_hardpoint_controller;
